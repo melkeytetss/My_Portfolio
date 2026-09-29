@@ -6,6 +6,10 @@
 .pnp.js
 .yarn/install-state.gz
 
+# pnpm is the package manager of choice (see README) — don't let yarn's
+# lockfile creep back in
+yarn.lock
+
 # testing
 /coverage
 
