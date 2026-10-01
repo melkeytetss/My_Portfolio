@@ -43,8 +43,8 @@ A jaw-dropping developer portfolio packed with interactive 3D animations, butter
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/Naresh-Khatri/3d-portfolio.git
-    cd 3d-portfolio
+    git clone https://github.com/melkeytetss/My_Portfolio.git
+    cd My_Portfolio
     ```
 
 2. **Install dependencies:**
