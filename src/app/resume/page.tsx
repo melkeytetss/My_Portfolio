@@ -1,9 +1,9 @@
+import { config } from "@/data/config";
 import ResumeView from "./resume-view";
 
 export const metadata = {
-  title: "Résumé | Naresh Khatri",
-  description:
-    "Résumé of Naresh Khatri — Senior Full-Stack Engineer. View online or download the PDF.",
+  title: `Résumé | ${config.author}`,
+  description: `Résumé of ${config.author}. View online or download the PDF.`,
 };
 
 export default function ResumePage() {

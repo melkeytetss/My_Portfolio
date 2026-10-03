@@ -5,9 +5,11 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { Download, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { config } from "@/data/config";
 import ResumeDoodle from "./resume-doodle";
 
-// Drop the compiled PDF here: frontend/public/Naresh_Khatri_Resume.pdf
+// TODO: this is the template author's résumé, still in the repo. Replace the
+// file with your own and update the path (plus the name in the <title> below).
 const RESUME_PATH = "/Naresh_Khatri_Resume.pdf";
 
 export default function ResumeView() {
@@ -60,7 +62,7 @@ export default function ResumeView() {
         >
           <ResumeDoodle
             src={`${RESUME_PATH}#toolbar=0&navpanes=0&view=FitH`}
-            title="Naresh Khatri — Résumé"
+            title={`${config.author} — Résumé`}
           />
         </motion.div>
       </div>
