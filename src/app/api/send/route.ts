@@ -3,7 +3,7 @@ import { config } from "@/data/config";
 import { Resend } from "resend";
 import { z } from "zod";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const apiKey = process.env.RESEND_API_KEY;
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 3;
@@ -40,6 +40,19 @@ export async function POST(req: Request) {
     } = Email.safeParse(body);
     if (!zodSuccess)
       return Response.json({ error: zodError?.message }, { status: 400 });
+
+    // Constructed per-request, not at module scope: `new Resend(undefined)` throws,
+    // which took down every build and every form submit while the key was unset.
+    if (!apiKey) {
+      console.error(
+        "[contact] RESEND_API_KEY is not set — set it in .env.local to receive messages."
+      );
+      return Response.json(
+        { error: "Contact form is not configured yet." },
+        { status: 503 }
+      );
+    }
+    const resend = new Resend(apiKey);
 
     const { data: resendData, error: resendError } = await resend.emails.send({
       from: "Porfolio <onboarding@resend.dev>",

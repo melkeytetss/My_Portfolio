@@ -1,8 +1,4 @@
-export const UMAMI_SRC =
-  process.env.UMAMI_DOMAIN || "https://umami.nareshkhatri.dev/script.js";
-
-// script url and collect api share an origin. never throw on a malformed
-// UMAMI_DOMAIN — this module is imported by the root layout
-export const UMAMI_ORIGIN = URL.canParse(UMAMI_SRC)
-  ? new URL(UMAMI_SRC).origin
-  : "";
+// Set UMAMI_DOMAIN to your own Umami instance to enable analytics. There is
+// deliberately no default: the template originally fell back to the author's
+// hosted instance, which would have reported your visitors' data to him.
+export const UMAMI_SRC = process.env.UMAMI_DOMAIN ?? "";

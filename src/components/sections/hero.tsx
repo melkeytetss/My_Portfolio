@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
-import { File, Github, Linkedin } from "lucide-react";
+import { File } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -11,13 +11,36 @@ import {
 import { usePreloader } from "../preloader";
 import { BlurIn, BoxReveal } from "../reveal-animations";
 import ScrollDownIcon from "../scroll-down-icon";
-import { SiGithub, SiLinkedin, SiX } from "react-icons/si";
+import { FaLinkedin } from "react-icons/fa6";
+import { SiGithub } from "react-icons/si";
 import { config } from "@/data/config";
 
 import SectionWrapper from "../ui/section-wrapper";
 
 const HeroSection = () => {
   const { isLoading } = usePreloader();
+
+  // The headline stacks two words: first name, then last name. The full name
+  // still lives in config.author and is what titles, OG tags, sitemap and the
+  // header button use.
+  const nameParts = config.author.split(" ").filter(Boolean);
+  const nameFirst = nameParts[0] ?? "";
+  const nameLast =
+    nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+
+  // The 3D keyboard is composited behind this column, so the headline has a hard
+  // width budget: the grid column is only ~420-480px inside max-w-7xl, and
+  // Unbounded sets roughly 1em per character. A 9-letter surname at 9xl rendered
+  // ~990px wide and overlapped the keyboard, so the size steps down as the
+  // longest part grows. Two-letter surnames keep the original display size.
+  const longestPart = nameParts.reduce((max, part) => Math.max(max, part.length), 0);
+  const nameSizeClass = cn(
+    longestPart >= 9
+      ? "text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl"
+      : longestPart >= 7
+        ? "text-6xl sm:text-7xl md:text-7xl lg:text-8xl xl:text-8xl"
+        : "text-6xl sm:text-7xl md:text-7xl lg:text-8xl xl:text-9xl"
+  );
 
   return (
     <SectionWrapper id="hero" className={cn("relative w-full h-screen")}>
@@ -51,13 +74,18 @@ const HeroSection = () => {
                       <h1
                         className={cn(
                           "-ml-[6px] leading-none text-transparent text-slate-800 text-left",
-                          "font-bold text-7xl md:text-7xl lg:text-8xl xl:text-9xl",
+                          "font-bold",
+                          nameSizeClass,
                           "cursor-default text-edge-outline font-display "
                         )}
                       >
-                        {config.author.split(" ")[0]}
-                        <br className="md:block hiidden" />
-                        {config.author.split(" ")[1]}
+                        {nameFirst}
+                        {nameLast && (
+                          <>
+                            <br />
+                            {nameLast}
+                          </>
+                        )}
                       </h1>
                     </TooltipTrigger>
                     <TooltipContent
@@ -113,14 +141,6 @@ const HeroSection = () => {
                   </Tooltip>
                   <div className="flex items-center h-full gap-2">
                     <Link
-                      href={config.social.twitter}
-                      target="_blank"
-                    >
-                      <Button variant={"outline"}>
-                        <SiX size={24} />
-                      </Button>
-                    </Link>
-                    <Link
                       href={config.social.github}
                       target="_blank"
                       className="cursor-can-hover"
@@ -135,7 +155,7 @@ const HeroSection = () => {
                       className="cursor-can-hover"
                     >
                       <Button variant={"outline"}>
-                        <SiLinkedin size={24} />
+                        <FaLinkedin size={24} />
                       </Button>
                     </Link>
                   </div>

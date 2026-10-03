@@ -7,6 +7,17 @@ import {
 } from "../ui/responsive-dialog";
 import { FloatingDock } from "../ui/floating-dock";
 import { ScrollArea } from "../ui/scroll-area";
+import {
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
+import {
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "../ui/drawer";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
@@ -18,19 +29,28 @@ import SectionWrapper from "../ui/section-wrapper";
 import ScrollingPreview from "../scrolling-preview";
 
 const ProjectsSection = () => {
+  // Hide the whole section while there is nothing to show, so we don't render an
+  // empty "Projects" heading (and the nav link is filtered out to match).
+  if (projects.length === 0) return null;
+
   return (
     <SectionWrapper id="projects" className="max-w-7xl mx-auto md:min-h-[130vh] px-4">
       <SectionHeader id="projects" title="Projects" />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+        {projects.map((project, i) => (
+          <ProjectCard key={project.id} project={project} index={i} />
         ))}
       </div>
     </SectionWrapper>
   );
 };
 
-const ProjectCard = ({ project }: { project: Project }) => {
+const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+  // The index staggers multi-image cards so a grid of them never swaps in sync.
+  // Same breakpoint the dialog wrapper uses: the sr-only title must belong to
+  // whichever container actually rendered (a Radix Title outside its own Root
+  // throws), so desktop gets DialogTitle and mobile gets DrawerTitle.
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   return (
     <div className="flex items-center justify-center">
       <ResponsiveDialog>
@@ -40,11 +60,15 @@ const ProjectCard = ({ project }: { project: Project }) => {
             style={{ aspectRatio: "3/2" }}
           >
             {/* `src` can be any aspect ratio (tall pages pan, normal ones fit);
-                the wallpaper is an optional /assets/backgrounds/<id>.jpg. */}
+                the wallpaper is an optional /assets/backgrounds/<id>.jpg.
+                `gallery` (when present) crossfades through every shot. */}
             <ScrollingPreview
               src={project.src}
               alt={project.title}
               bg={`/assets/backgrounds/${project.id}.jpg`}
+              bgGradient={project.bgGradient}
+              gallery={project.gallery}
+              startDelayMs={index * 1400}
             />
             <div className="absolute w-full h-24 bottom-0 left-0 bg-gradient-to-t from-background via-background/80 to-transparent pointer-events-none z-10">
               <div className="flex flex-col h-full items-start justify-end p-4">
@@ -60,6 +84,21 @@ const ProjectCard = ({ project }: { project: Project }) => {
         </ResponsiveDialogTrigger>
 
         <ResponsiveDialogContent className="md:max-w-4xl md:h-[85vh] md:!flex md:flex-col md:overflow-hidden md:p-0 md:gap-0">
+          {/* Screen-reader title: Radix requires a Title, and the visible
+              header below is a custom layout, so this stays hidden (same
+              pattern as slide-show.tsx). Matched to the container — desktop
+              dialog vs mobile drawer. */}
+          {isDesktop ? (
+            <DialogHeader className="sr-only">
+              <DialogTitle>{project.title}</DialogTitle>
+              <DialogDescription>{project.category}</DialogDescription>
+            </DialogHeader>
+          ) : (
+            <DrawerHeader className="sr-only">
+              <DrawerTitle>{project.title}</DrawerTitle>
+              <DrawerDescription>{project.category}</DrawerDescription>
+            </DrawerHeader>
+          )}
           {/* Sticky header */}
           <div className="shrink-0 border-b border-border bg-background/80 backdrop-blur-sm px-8 py-5">
             <div className="flex items-center justify-between gap-4">

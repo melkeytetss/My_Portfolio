@@ -112,6 +112,20 @@ const PROJECT_SKILLS = {
     ),
   },
   firebase: brand("Firebase", "firebase-mono.svg"),
+  // Firestore and Cloud Functions have no registry marks — text marks, same
+  // treatment as the other non-registry brands above.
+  firestore: {
+    title: "Firestore",
+    bg: "black",
+    fg: "white",
+    icon: <span className="text-xs font-bold">Fs</span>,
+  },
+  cloudFunctions: {
+    title: "Cloud Functions",
+    bg: "black",
+    fg: "white",
+    icon: <span className="text-xs font-bold">CF</span>,
+  },
   sockerio: brand("Socket.io", "socketdotio-mono.svg"),
   js: brand("JavaScript", "javascript-mono.svg"),
   ts: brand("TypeScript", "typescript-mono.svg"),
@@ -179,6 +193,31 @@ const PROJECT_SKILLS = {
     fg: "white",
     icon: <span className="text-xs font-bold">Expo</span>,
   },
+  // Native Android stack — also not in the registry, same text-mark treatment.
+  android: {
+    title: "Android",
+    bg: "black",
+    fg: "white",
+    icon: <span className="text-xs font-bold">An</span>,
+  },
+  java: {
+    title: "Java",
+    bg: "black",
+    fg: "white",
+    icon: <span className="text-xs font-bold">Java</span>,
+  },
+  xml: {
+    title: "XML",
+    bg: "black",
+    fg: "white",
+    icon: <span className="text-xs font-bold">XML</span>,
+  },
+  material: {
+    title: "Material Design",
+    bg: "black",
+    fg: "white",
+    icon: <span className="text-xs font-bold">M</span>,
+  },
   mcp: {
     title: "MCP",
     bg: "black",
@@ -192,649 +231,199 @@ export type Project = {
   title: string;
   src: string;
   screenshots: string[];
+  // Optional card gallery: when 2+ images are given, the card crossfades
+  // through them instead of showing `src` statically. `src` stays the poster
+  // frame for the reduced-motion / single-image fallback.
+  gallery?: string[];
+  // Optional CSS backdrop painted when no `bg` wallpaper image exists for this
+  // project — a mesh gradient in the reference cards' spirit. Falls back to a
+  // neutral dark mesh when omitted.
+  bgGradient?: string;
   skills: { frontend: Skill[]; backend: Skill[] };
   content: React.ReactNode | any;
   github?: string;
   live: string;
 };
+
+// The template shipped seven of its author's projects. All were removed rather
+// than rebranded — presenting his work as yours is not a cosmetic problem. The
+// brand chips and helpers above are kept so entries are a drop-in.
+//
+// To add one: append an object matching `Project`. `id` doubles as the
+// wallpaper filename — the card loads /assets/backgrounds/${id}.jpg — so name
+// the wallpaper to match or the card renders without one.
 const projects: Project[] = [
   {
-    id: "storekit",
-    category: "Commerce platform",
-    title: "StoreKit",
-    src: "/assets/projects-screenshots/storekit/landing.png",
-    screenshots: ["landing.png"],
+    id: "smartquiz",
+    category: "AI-assisted quiz platform",
+    title: "SmartQuiz",
+    src: "/assets/projects-screenshots/smartquiz/instructor_dashboard.png",
+    screenshots: [
+      "instructor_dashboard.png",
+      "blooms_taxonomy_analysis.png",
+      "blooms_taxonomy_analysis2.png",
+      "quiz_review.png",
+      "item_analysis.png",
+    ],
+    gallery: [
+      `${BASE_PATH}/smartquiz/instructor_dashboard.png`,
+      `${BASE_PATH}/smartquiz/blooms_taxonomy_analysis.png`,
+      `${BASE_PATH}/smartquiz/blooms_taxonomy_analysis2.png`,
+      `${BASE_PATH}/smartquiz/quiz_review.png`,
+      `${BASE_PATH}/smartquiz/item_analysis.png`,
+    ],
+    // No wallpaper file exists for this project, so the card paints this mesh
+    // instead — indigo/violet/cyan over the dashboard's dark navy.
+    bgGradient:
+      "radial-gradient(120% 90% at 15% 10%, #7c3aed 0%, transparent 55%), " +
+      "radial-gradient(100% 90% at 85% 15%, #2563eb 0%, transparent 55%), " +
+      "radial-gradient(120% 100% at 80% 90%, #db2777 0%, transparent 55%), " +
+      "radial-gradient(100% 100% at 10% 90%, #0891b2 0%, transparent 55%), " +
+      "#0f172a",
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
+        PROJECT_SKILLS.js,
         PROJECT_SKILLS.react,
-        PROJECT_SKILLS.reactNative,
         PROJECT_SKILLS.tailwind,
       ],
-      backend: [
-        PROJECT_SKILLS.hono,
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.redis,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.cloudflare,
-        PROJECT_SKILLS.docker,
-      ],
+      backend: [PROJECT_SKILLS.python, PROJECT_SKILLS.supabase],
     },
-    live: "https://storekit.app/",
-    // Private repo (commercial product) — intentionally no public source link
+    // Not yet deployed (live: "#") and the repo is private (no github field),
+    // so both the Visit and Source buttons hide themselves — no dead links.
+    live: "#",
     get content() {
       return (
         <div>
           <TypographyP className="font-mono text-2xl text-center">
-            A production-grade, multi-tenant commerce platform — Shopify-class,
-            built solo.
+            An AI-assisted quiz creation, Bloom&rsquo;s Taxonomy classification,
+            review system, and item analysis platform.
           </TypographyP>
           <TypographyP className="font-mono ">
-            Architected and built end-to-end as a single engineer: a
-            pnpm/Turborepo monorepo spanning 6 applications and 11 shared
-            packages — merchant dashboard, customer storefront, headless REST
-            API, and two React Native apps (customer + POS) — with a shared
-            type-safe core (54-table Drizzle/Postgres schema, 33 tRPC v11
-            routers, end-to-end inference). ~238K lines of TypeScript powering 4
-            storefront verticals: e-commerce, food delivery, quick-commerce, and
-            digital goods.
+            SmartQuiz is a web-based quiz management platform for instructors
+            that combines AI-assisted quiz creation, Bloom&rsquo;s Taxonomy
+            classification, TOS compliance checks, and item analysis in one
+            workflow. A FastAPI model service classifies questions into
+            Bloom&rsquo;s levels, flags low-confidence items for manual review,
+            and helps instructors balance quizzes around the school&rsquo;s
+            30/70 LOTS-HOTS requirement. The system also includes quiz analysis
+            reports, per-question feedback, PDF export, and a Supabase-backed
+            backend for quizzes, attempts, and review data.
           </TypographyP>
           <ProjectsLinks live={this.live} repo={this.github} />
 
-          <TypographyH3 className="my-4 mt-8">Payments &amp; reliability</TypographyH3>
+          <TypographyH3 className="my-4 mt-8">
+            AI Bloom&rsquo;s analysis
+          </TypographyH3>
           <p className="font-mono mb-2">
-            A PhonePe payment integration with OAuth2 token exchange, Redis-cached
-            per-store tokens, and idempotency keys on orders/transactions/refunds
-            so checkout survives refreshes and duplicate webhooks without
-            double-charging. Payment credentials are encrypted at rest and webhook
-            signatures verified to prevent tampering, with a BullMQ/Redis async
-            layer (5 retries, exponential backoff) driving notifications and order
-            jobs — every webhook event logged for replay.
+            Quiz questions are sent to a Python FastAPI service that classifies
+            each item into Bloom&rsquo;s Taxonomy levels and returns
+            per-question confidence, thinking order, and review flags — so
+            low-confidence classifications surface for instructor review instead
+            of silently passing through.
           </p>
           <SlideShow
             images={[
-              `${BASE_PATH}/storekit/orders.png`,
-              `${BASE_PATH}/storekit/login.png`,
+              `${BASE_PATH}/smartquiz/blooms_taxonomy_analysis.png`,
+              `${BASE_PATH}/smartquiz/blooms_taxonomy_analysis2.png`,
             ]}
           />
 
-          <TypographyH3 className="my-4 mt-8">AI storefront generation</TypographyH3>
+          <TypographyH3 className="my-4 mt-8">TOS compliance</TypographyH3>
           <p className="font-mono mb-2">
-            <em>In progress.</em> An agentic generator where an LLM writes real
-            storefront code inside isolated container sandboxes, gated by a
-            type-check + lint pass so broken code never lands — then deploys each
-            store programmatically as its own Cloudflare Worker through a
-            queue-driven pipeline, with a fleet health monitor that auto-rolls-back
-            failing deployments within minutes.
+            The results view checks the quiz against the 30% LOTS / 70% HOTS
+            Table of Specifications target, making it visible at a glance
+            whether a quiz meets the school&rsquo;s required balance before it
+            goes out.
           </p>
+          <SlideShow images={[`${BASE_PATH}/smartquiz/quiz_review.png`]} />
 
-          <TypographyH3 className="my-4 mt-8">Domain modeling &amp; breadth</TypographyH3>
+          <TypographyH3 className="my-4 mt-8">
+            Item analysis and review workflow
+          </TypographyH3>
           <p className="font-mono mb-2">
-            An explicit order state-machine spans the 4 verticals with
-            illegal-transition guards, fronted by a typed event bus and a
-            per-store plugin registry for pluggable lifecycle behavior without
-            touching core code. The merchant dashboard ships a visual theme
-            builder, analytics, inventory, coupons, abandoned-cart recovery, and
-            Pixie — an in-product AI agent that manages the store via tool-calling
-            over live data. The POS app does Bluetooth ESC/POS thermal printing,
-            mDNS/TCP printer discovery, and barcode scanning.
+            Instructors can review question-level performance, inspect flagged
+            items, export Bloom&rsquo;s reports to PDF, and forward analysis
+            results for admin review — closing the loop from AI classification
+            to approved quiz.
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/storekit/storefront.png`,
-              `${BASE_PATH}/storekit/themes.png`,
-            ]}
-          />
+          <SlideShow images={[`${BASE_PATH}/smartquiz/item_analysis.png`]} />
         </div>
       );
     },
   },
   {
-    id: "codingducks",
-    category: "Real-time coding platform",
-    title: "Coding Ducks",
-    src: "/assets/projects-screenshots/codingducks/landing.png",
-    screenshots: ["landing.png"],
+    id: "buksu-eeu",
+    category: "Enterprise Mobile App",
+    title: "BUKSU EEU",
+    src: "/assets/projects-screenshots/buksu-eeu/landing_page.png",
+    screenshots: ["landing_page.png"],
     skills: {
       frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.codemirror,
-        PROJECT_SKILLS.reactFlow,
+        PROJECT_SKILLS.android,
+        PROJECT_SKILLS.java,
+        PROJECT_SKILLS.xml,
+        PROJECT_SKILLS.material,
       ],
       backend: [
+        PROJECT_SKILLS.firebase,
         PROJECT_SKILLS.node,
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.yjs,
-        PROJECT_SKILLS.hocuspocus,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.docker,
+        PROJECT_SKILLS.firestore,
+        PROJECT_SKILLS.cloudFunctions,
       ],
     },
-    live: "https://www.codingducks.xyz/",
-    github: "https://github.com/Naresh-Khatri/Coding-Ducks",
+    live: "https://melkeytetss.github.io/BUKSU_EEU_LANDING_PAGE/",
+    github: "https://github.com/melkeytetss/Buksu_EEU_Application",
     get content() {
       return (
         <div>
           <TypographyP className="font-mono text-2xl text-center">
-            A multi-language judge, a CRDT collaborative editor, and a
-            system-design simulation game — in one platform.
+            Real-time campus e-commerce and inventory management platform for
+            Bukidnon State University.
           </TypographyP>
           <TypographyP className="font-mono ">
-            Coding Ducks is a full-stack, real-time coding platform built as a
-            production-grade Turborepo monorepo (2 apps, 7 shared packages) in
-            strict TypeScript — Next.js 16 / React 19, a tRPC v11 type-safe API,
-            PostgreSQL + Drizzle ORM (18 tables), and a standalone real-time
-            Node service, with enforced one-way apps → packages dependency
-            boundaries.
+            A native Android application on a serverless Firebase backend that
+            streamlines official university merchandise sales and stock
+            management — sub-second real-time catalog updates,
+            ACID-transaction-protected checkouts that prevent stock overselling,
+            and automated multi-channel notifications over FCM and Brevo SMTP
+            for students and administrators.
           </TypographyP>
           <ProjectsLinks live={this.live} repo={this.github} />
 
-          <TypographyH3 className="my-4 mt-8">
-            Ducklets — real-time collaborative editor
-          </TypographyH3>
+          <TypographyH3 className="my-4 mt-8">Home</TypographyH3>
           <p className="font-mono mb-2">
-            A multiplayer code editor built on Y.js CRDTs and a standalone
-            Hocuspocus WebSocket server — concurrent editing, live cursor
-            presence, and conflict-free merging persisted to Postgres as
-            versioned binary state. Secured by a custom HMAC-SHA256 signed-token
-            scheme (constant-time verification, 1-hour TTL) with owner / editor
-            / viewer RBAC re-verified live against the DB so permission
-            revocation takes effect mid-session. Includes room forking,
-            point-in-time snapshots, idempotent chat, and throttled live
-            previews (Puppeteer + Cloudflare R2, coalesced to ≤1 render/60s).
+            A personalized student portal with dynamic greetings, real-time
+            unread notification badges, and a featured promo carousel. Instant
+            category filters (All, Apparel, Accessories) and full-text product
+            search keep discovery fast, while a persistent bottom nav synced
+            with the global cart badge cuts navigation friction.
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/codingducks/ducklets-editor.png`,
-              `${BASE_PATH}/codingducks/ducklets.png`,
-            ]}
-          />
+          <SlideShow images={[`${BASE_PATH}/buksu-eeu/home.jpg`]} />
 
-          <TypographyH3 className="my-4 mt-8">
-            CD Judge — in-house code execution engine
-          </TypographyH3>
+          <TypographyH3 className="my-4 mt-8">Products</TypographyH3>
           <p className="font-mono mb-2">
-            A free, self-hostable, Judge0-class execution engine supporting 10
-            languages (Python, JS, TS, Java, C, C++, Rust, Go, Ruby, PHP) with per-language
-            driver/harness generation that injects test cases, parses typed
-            arguments, and redacts hidden-test output. An asynchronous submit →
-            poll → verdict pipeline uses an optimistic-locking finalizer
-            (UPDATE … WHERE status=&apos;running&apos;) to guarantee exactly-once
-            streak/scoring under concurrent polling, plus &quot;beats X%&quot;
-            runtime-percentile ranking via SQL window aggregates.
+            An interactive grid catalog showing live inventory with dynamic
+            low-stock warnings (&ldquo;Only 5 left&rdquo;), multi-size
+            selection, Cloudinary-served media cached through Glide, and
+            quick-add cart interactions. An admin suite handles real-time CRUD,
+            image uploads, and soft-archive toggles.
           </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/codingducks/problems.png`,
-              `${BASE_PATH}/codingducks/problem.png`,
-              `${BASE_PATH}/codingducks/machine-coding.png`,
-            ]}
-          />
+          <SlideShow images={[`${BASE_PATH}/buksu-eeu/products.jpg`]} />
 
-          <TypographyH3 className="my-4 mt-8">
-            System Design — simulation game
-          </TypographyH3>
+          <TypographyH3 className="my-4 mt-8">Orders</TypographyH3>
           <p className="font-mono mb-2">
-            An interactive puzzle game where users assemble architectures from
-            16 typed building blocks on a React Flow canvas, then run them
-            through a pure-TypeScript, client-side traffic-simulation engine —
-            topological propagation, capacity/latency modeling, cache-warmth
-            EMA, SPOF detection, and DDoS &amp; chaos-fault injection. A 3-star
-            scoring model across reliability / performance / efficiency spans 10
-            progressively harder levels, guarded by a calibration suite
-            (node&nbsp;--test) that runs reference designs 15× through the real
-            engine to assert each level stays beatable-but-hard (optimal ⇒ 3★,
-            naive ⇒ ≤2★, broken ⇒ fail).
+            Tabbed order tracking across All, Pending, Confirmed, and Picked Up
+            stages. Checkout runs 2-phase Firestore transactions via{" "}
+            <code>db.runTransaction</code> so stock deduction is atomic — no
+            overselling under concurrent checkouts. A dual-alert pipeline
+            delivers push notifications and Brevo transactional emails the
+            moment orders are ready for pickup.
           </p>
-          <SlideShow images={[`${BASE_PATH}/codingducks/sysdesign.png`]} />
-        </div>
-      );
-    },
-  },
-  {
-    id: "gumbalup",
-    category: "Real-time quiz platform",
-    title: "Gumbalup",
-    src: "/assets/projects-screenshots/gumbalup/landing.png",
-    screenshots: ["landing.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.motion,
-      ],
-      backend: [
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.partykit,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.cloudflare,
-        PROJECT_SKILLS.docker,
-      ],
-    },
-    live: "https://gumbalup.com/",
-    // Private repo (commercial product) — intentionally no public source link
-    get content() {
-      return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A live, interactive quiz &amp; audience-engagement platform — built
-            solo, end-to-end.
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            A production-grade, multi-tenant SaaS where organizations build
-            quizzes (manually or with AI) and run live, host-driven games —
-            players join from any device via room code / QR and compete on a
-            real-time, server-authoritative leaderboard. Also supports async
-            self-paced quizzes, team mode, anti-cheat monitoring, analytics,
-            billing, and white-labeling. ~43.5K lines of TypeScript across 257
-            files.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Server-authoritative game engine
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A real-time game engine on PartyKit (Cloudflare Durable Objects +
-            WebSockets): a per-room in-memory state machine with an authoritative
-            1-second timer, speed-rank + streak scoring, deterministic
-            tie-broken leaderboards, team mode, and graceful reconnect/replay —
-            ~2,800 lines of game logic behind a typed message protocol (42
-            discriminated-union variants). Correctness is never sent to clients
-            during an active question, so players can&apos;t sniff answers or
-            game the clock.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/gumbalup/dashboard.png`]} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Edge-to-DB security boundary &amp; AI authoring
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            The edge worker never connects to Postgres directly — it proxies all
-            persistence through a shared-secret internal HTTPS API on Next.js,
-            keeping the database unreachable from the public internet while the
-            worker stays stateless and edge-deployed. A fully type-safe layer (17
-            tRPC routers, 5 authorization tiers, Zod) backs it, with LLM-powered
-            quiz authoring (Groq / Llama) from topics or uploaded PDFs, quota-
-            metered per org, plus analytics with CSV/Excel/PDF export.
-          </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/gumbalup/editor.png`,
-              `${BASE_PATH}/gumbalup/library.png`,
-            ]}
-          />
-        </div>
-      );
-    },
-  },
-  {
-    id: "waku",
-    category: "Image rendering platform",
-    title: "Waku",
-    src: "/assets/projects-screenshots/waku/landing.png",
-    screenshots: ["landing.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.tailwind,
-      ],
-      backend: [
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.satori,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.cloudflare,
-        PROJECT_SKILLS.turborepo,
-        PROJECT_SKILLS.docker,
-      ],
-    },
-    live: "https://waku.nareshkhatri.dev",
-    github: "https://github.com/Naresh-Khatri/waku",
-    get content() {
-      return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            An on-demand dynamic image-generation service — &quot;design once,
-            ship a typed URL endpoint.&quot;
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            Design a template once in a Canva-like editor, then get a typed URL
-            that renders images with live, dynamic data on demand (currently
-            focused on OG images). Built as a 7-package Turborepo monorepo
-            (Next.js 15 / React 19 / TypeScript) — a visual editor, an edge render
-            service, a 3-stage rendering engine, typed SDKs, and shared DB/font
-            packages. 25K+ LOC, MIT-licensed and self-hostable via
-            docker-compose.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Deterministic render pipeline &amp; URL contract
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A deterministic pipeline (TemplateDocument → Satori → Resvg → sharp)
-            compiles a flat node IR to SVG and rasterizes to PNG/WebP/JPEG with
-            HTTP Accept-based format negotiation, dynamic font subsetting from a
-            CDN (25 families, Latin unicode-range parsing), and retina-aware
-            transcoding — served behind an immutable Cache-Control: max-age=1y URL
-            contract. Query params are sorted before encoding so any input order
-            maps to one cache key; versioned URLs are immutable while published
-            URLs 302-redirect to a numbered version, so edits never break
-            previously-shared links.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/waku/preview.png`]} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Canva-like editor &amp; AI template generation
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A visual editor built from scratch (no Figma/tldraw/Fabric) on raw
-            pointer events + a Zustand store: edge/center snap guides,
-            scroll-anchored + pinch zoom (5%–800%), a 100-entry coalesced
-            undo/redo stack, and a parameter-binding system that turns any field
-            into a typed URL param. An AI agent generates full templates from a
-            prompt, validated against a Zod document schema. The public image
-            proxy is also SSRF-hardened (private-IP/CIDR blocking, redirect
-            re-validation, streaming size caps, and per-user/IP rate limiting).
-          </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/waku/editor.png`,
-              `${BASE_PATH}/waku/ai.png`,
-            ]}
-          />
-        </div>
-      );
-    },
-  },
-  {
-    id: "peakposts",
-    category: "AI social SaaS",
-    title: "PeakPosts",
-    src: "/assets/projects-screenshots/peakposts/landing.png",
-    screenshots: ["landing.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.motion,
-        PROJECT_SKILLS.nextIntl,
-      ],
-      backend: [
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.aiSDK,
-        PROJECT_SKILLS.anthropic,
-        PROJECT_SKILLS.mistral,
-        PROJECT_SKILLS.cloudflare,
-      ],
-    },
-    // Private repo (commercial product) — intentionally no public source link
-    live: "https://peakposts.ai/",
-    get content() {
-      return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A multi-tenant SaaS that turns QR-scanned diner reviews into
-            AI-generated, multi-language social posts — built solo, end-to-end.
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            A production-grade, multi-tenant SaaS (~50K lines of TypeScript) on
-            the Next.js 15 App Router with end-to-end type safety from PostgreSQL
-            → Drizzle ORM → tRPC v11 → React, serving five distinct audiences —
-            diners, brand owners, counter staff, platform admins, and public
-            marketing — from a single application. 208 React components, 14 tRPC
-            routers, a normalized 19-table schema, and 5 AI subsystems across 5
-            languages.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Peakie — agentic AI analytics assistant
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A hand-rolled tool-calling loop on the Vercel AI SDK (Mistral) over 10
-            brand-scoped tools — no agent framework — hardened against
-            small-model failure modes: spin-detection, hallucinated-tool-name
-            repair, per-tool and total over-fetch caps, exact-call de-duplication,
-            a token-budget history trimmer, and forced tool-choice on the final
-            step to guarantee termination within 6 steps. A terminal{" "}
-            <code>present_actions</code> tool forces structured, deep-linkable
-            answers, and every AI-produced link is re-validated against the
-            user&apos;s accessible scope so a hallucinated or out-of-scope
-            resource ID can never leak across tenant boundaries.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/peakposts/dashboard.png`]} />
-
-          <TypographyH3 className="my-4 mt-8">
-            AI content-generation pipeline
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            An Anthropic Claude pipeline converts a star rating + photo + note
-            into platform-tailored social captions across 6 platforms and 5
-            languages using Zod-schema-enforced structured output, brand-voice
-            configuration, content moderation, and deterministic fallbacks so
-            generation never hard-fails. The diner&apos;s locale does double duty
-            — selecting both the UI catalog and the language the AI writes in
-            (e.g. picking Chinese yields a Xiaohongshu-style caption). A
-            retrieval-augmented help center pairs Mistral embeddings + cosine
-            similarity with a weighted-TF lexical fallback for API outages.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/peakposts/posts.png`]} />
-
-          <TypographyH3 className="my-4 mt-8">
-            In-browser video editor &amp; multi-tenant security
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Diners generate H.264 MP4 video and images entirely client-side via
-            the WebCodecs <code>VideoEncoder</code> + mp4-muxer and Canvas 2D,
-            inside a direct-manipulation post editor (pinch/rotate/drag gestures,
-            caption presets, CJK font subsetting) — zero server-side render cost.
-            The multi-step diner flow persists to IndexedDB via a custom Zustand
-            adapter, with client-side image compression and presigned
-            direct-to-R2 uploads. Underneath sits a five-tier tRPC authorization
-            layer with brand- vs. outlet-scoped grants, existence-masking
-            (<code>NOT_FOUND</code> over <code>FORBIDDEN</code>), and two-factor
-            counter auth — a hashed device token plus per-staff PIN with
-            brute-force lockout.
-          </p>
-        </div>
-      );
-    },
-  },
-  {
-    id: "kanbi",
-    category: "Realtime project tracker",
-    title: "Kanbi",
-    src: "/assets/projects-screenshots/kanbi/landing.png",
-    screenshots: ["landing.png"],
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.react,
-        PROJECT_SKILLS.reactNative,
-        PROJECT_SKILLS.expo,
-        PROJECT_SKILLS.tailwind,
-      ],
-      backend: [
-        PROJECT_SKILLS.trpc,
-        PROJECT_SKILLS.drizzle,
-        PROJECT_SKILLS.postgres,
-        PROJECT_SKILLS.betterAuth,
-        PROJECT_SKILLS.mcp,
-        PROJECT_SKILLS.cloudflare,
-        PROJECT_SKILLS.turborepo,
-        PROJECT_SKILLS.docker,
-      ],
-    },
-    live: "https://kanbi.nareshkhatri.dev",
-    github: "https://github.com/naresh-Khatri/kanbi",
-    get content() {
-      return (
-        <div>
-          <TypographyP className="font-mono text-2xl text-center">
-            A keyboard-first, realtime Kanban tracker — &quot;Linear, but small
-            enough to own.&quot;
-          </TypographyP>
-          <TypographyP className="font-mono ">
-            A full-stack TypeScript monorepo (pnpm + Turborepo) spanning three
-            deployable surfaces — a Next.js 15 web app, an OAuth-secured MCP
-            server for AI agents, and an Expo mobile companion — with end-to-end
-            type safety from Postgres → Drizzle → tRPC v11 → React, so a schema
-            change ripples to compile errors in the UI with zero codegen. ~21K
-            lines of TypeScript, 16 domain tRPC routers, a 25-table schema, and 8
-            scoped MCP agent tools.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Realtime collaboration &amp; fractional ordering
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Drag-and-drop boards with optimistic UI and live multi-user updates,
-            powered by tRPC subscriptions over Server-Sent Events. An in-process
-            event bus broadcasts <code>boardId</code>-scoped invalidation signals
-            that carry <em>no payload</em> — clients simply refetch through React
-            Query, keeping the realtime layer cheap and consistent. Mutations
-            snapshot-and-rollback (<code>onMutate</code>/<code>onError</code>/
-            <code>onSettled</code>) and deletes are undoable (6-second deferred
-            server call + toast). Columns and cards order via fractional indexing
-            — new items insert at the midpoint between neighbors, so a reorder
-            touches one row instead of re-sequencing the whole list, with collapse
-            detection and rebalancing.
-          </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/kanbi/board.png`,
-              `${BASE_PATH}/kanbi/dashboard.png`,
-            ]}
-          />
-
-          <TypographyH3 className="my-4 mt-8">
-            One auth model, three clients &amp; an MCP server for AI agents
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A layered, type-safe authorization model encodes access control at the
-            procedure level — <code>protectedProcedure</code> →{" "}
-            <code>projectProcedure</code> → <code>boardProcedure</code> →{" "}
-            <code>publicBoardProcedure</code> (share token, no auth) — with role
-            checks gating every mutation. The same model is reused across three
-            entry points so ACLs can&apos;t drift: browser cookies, hashed
-            per-device bearer tokens for mobile (SHA-256 at rest), and OAuth-2.1
-            JWTs for AI agents. The spec-compliant MCP server (Streamable HTTP)
-            exposes 8 read/write tools through a full OAuth 2.1 flow — dynamic
-            client registration, a consent screen, JWKS-verified JWTs — each tool a
-            thin wrapper over the existing tRPC procedures via a JWT→session
-            bridge, so permissions, validation, ordering, and the realtime bus are
-            all reused; agent-authored HTML is server-side sanitized.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/kanbi/profile.png`]} />
-
-          <TypographyH3 className="my-4 mt-8">
-            Native Android dock dashboard &amp; AI task drafting
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            A custom native Android Expo module written in Kotlin implements
-            Android&apos;s <code>DreamService</code> (the system daydream): dock
-            the phone and the OS launches a React Native root view rendering the
-            active task and a Pomodoro timer — a genuine focus dashboard, with{" "}
-            <code>showWhenLocked</code>, screen-on, and keyguard dismissal handled
-            natively. Devices pair by QR with secure token storage
-            (<code>expo-secure-store</code>). On the web, paste a raw client
-            message and a Groq-backed LLM extracts structured, actionable issues
-            (title, description, label, priority); rich-text descriptions use Tiptap
-            with <code>@mention</code> and <code>#ticket</code> cross-reference
-            extensions.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/kanbi/ai-draft.png`]} />
-        </div>
-      );
-    },
-  },
-  {
-    id: "portfolio",
-    category: "Portfolio",
-    title: "My Portfolio",
-    src: "/assets/projects-screenshots/portfolio/landing.png",
-    screenshots: ["1.png"],
-    live: "http://nareshkhatri.vercel.app",
-    github: "https://github.com/Naresh-Khatri/Portfolio",
-    skills: {
-      frontend: [
-        PROJECT_SKILLS.ts,
-        PROJECT_SKILLS.next,
-        PROJECT_SKILLS.tailwind,
-        PROJECT_SKILLS.motion,
-        PROJECT_SKILLS.spline,
-      ],
-      backend: [],
-    },
-    get content() {
-      return (
-        <div>
-          <TypographyP className="font-mono ">
-            Welcome to my digital playground, where creativity meets code in the
-            dopest way possible.
-          </TypographyP>
-          <ProjectsLinks live={this.live} repo={this.github} />
-          <TypographyH3 className="my-4 mt-8">
-            Beautiful 3D Objects{" "}
-          </TypographyH3>
-          <p className="font-mono mb-2">
-            Did you see that 3D keyboard modal? Yeah! I made that. That
-            interactive keyboard is being rendered in 3D on a webpage 🤯, and
-            pressing each keycap reveals a skill in a goofy way. It&apos;s like
-            typing, but make it art.
-          </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/portfolio/landing.png`,
-              `${BASE_PATH}/portfolio/skills.png`,
-            ]}
-          />
-          <TypographyH3 className="my-4 ">Space Theme</TypographyH3>
-          <p className="font-mono mb-2">
-            Dark background + floating particles = out-of-this-world cool.
-          </p>
-          <SlideShow images={[`${BASE_PATH}/portfolio/navbar.png`]} />
-          <TypographyH3 className="my-4 mt-8">Projects</TypographyH3>
-
-          <p className="font-mono mb-2">
-            My top personal and freelance projects — no filler, all killer.
-          </p>
-          <SlideShow
-            images={[
-              `${BASE_PATH}/portfolio/projects.png`,
-              `${BASE_PATH}/portfolio/project.png`,
-            ]}
-          />
-          <p className="font-mono mb-2 mt-8 text-center">
-            This site&apos;s not just a portfolio — it&apos;s a whole vibe.
-          </p>
+          <SlideShow images={[`${BASE_PATH}/buksu-eeu/orders.jpg`]} />
         </div>
       );
     },
   },
 ];
+
 export default projects;
